@@ -1,0 +1,59 @@
+trigger:
+  - dev
+
+variables:
+  - group: MHHSTest
+  - name: version
+    value: 0.2.53
+  - name: suffix
+    value: qa
+  - name: buildConfiguration
+    value: Release
+
+stages:
+  - stage: BuildImageAndPush
+    jobs:
+      - job: Package
+        pool:
+          vmImage: "Ubuntu-24.04"
+        continueOnError: "true"
+        steps:
+          - task: Docker@2
+            displayName: Login to GitLab
+            inputs:
+              command: login
+              containerRegistry: GitLabRegistry
+
+          - task: Docker@2
+            displayName: Build
+            inputs:
+              command: build
+              repository: providor/mhhs-request-service
+              tags: $(version)-$(suffix)
+              arguments:
+                --build-arg MHHS_MESSAGING_CONNECTIONSTRING=$(MhhsServiceBusConnectionString)
+                --build-arg ELECTRIC_MESSAGING_CONNECTIONSTRING=$(ElectricServiceBusConnectionString)
+                --build-arg MESSAGING_REQUESTQUEUENAME=$(MessagingRequestQueueName)
+                --build-arg MESSAGING_RESPONSEQUEUENAME=$(MessagingResponseQueueName)
+                --build-arg ASSETAPPOINTMENT_QUEUENAME=$(AssetAppointmentQueueName)
+                --build-arg ASSETAPPOINTMENTCONFIRMATION_QUEUENAME=$(AssetAppointmentConfirmationQueueName)
+                --build-arg ASSETTERMINATION_QUEUENAME=$(AssetTerminationQueueName)
+                --build-arg MESSAGING_RESPONSEFROMASSETREGISTERQUEUENAME=$(ResponseFromAssetRegisterQueueName)
+                --build-arg MESSAGING_ARCHANGEINENERGISATIONSTATUSQUEUENAME=$(ArChangeInEnergisationStatusQueueName)
+                --build-arg ELECTRIC_DATAFLOWS_REQUESTQUEUENAME=$(ElectricDataFlowRequestQueueName)
+                --build-arg MHHS_EXTERNAL_DATABASE_CONNECTIONSTRING=$(MhhsExternalDatabaseConnectionString)
+                --build-arg MHHS_INTERNAL_DATABASE_CONNECTIONSTRING=$(MhhsInternalDatabaseConnectionString)
+                --build-arg USERNAME=$(PatUsername)
+                --build-arg PAT=$(PAT)
+                --build-arg FEED_URL=$(FeedUrl)
+                --build-arg SHARED_FEED_URL=$(SharedFeedUrl)
+                --build-arg LOGGING_INGEST_URL=$(LoggingIngestUrl)
+                --build-arg LOGGING_API_KEY=$(LoggingApiKey)
+
+          - task: Docker@2
+            displayName: Push
+            inputs:
+              command: push
+              containerRegistry: GitLabRegistry
+              repository: providor/mhhs-request-service
+              tags: $(version)-$(suffix)
