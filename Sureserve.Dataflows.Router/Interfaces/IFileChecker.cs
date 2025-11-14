@@ -1,4 +1,6 @@
-﻿namespace Sureserve.Dataflows.Router.Interfaces;
+﻿using Sureserve.Dataflows.Router.Configuration;
+
+namespace Sureserve.Dataflows.Router.Interfaces;
 
 public interface IFileChecker
 {
