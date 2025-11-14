@@ -1,13 +1,16 @@
 ﻿using Sureserve.Dataflows.Router.Configuration;
-using Sureserve.Dataflows.Router.ElectricDataflows;
+using Sureserve.Dataflows.Router.FileProcessing;
 
 namespace Sureserve.Dataflows.Router;
 
-public class DataflowsRouterWorker(ILogger<DataflowsRouterWorker> logger, PathConfig config) : BackgroundService
+public class DataflowsRouterWorker(ILogger<DataflowsRouterWorker> logger, EnvironmentConfigs config) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var electricFileChecker = new ElectricDataFlowsFileChecker(logger, config);
-        await electricFileChecker.CheckForFilesAsync(stoppingToken);
+        foreach (EnvironmentConfig envConfig in config.Environments)
+        {
+            var fileChecker = new DataFlowsFileChecker(logger, envConfig);
+            await fileChecker.CheckForFilesAsync(stoppingToken);
+        }
     }
 }

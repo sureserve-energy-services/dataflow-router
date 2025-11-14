@@ -3,15 +3,16 @@ using Microsoft.Extensions.FileProviders.Internal;
 using Sureserve.Dataflows.Router.Configuration;
 using Sureserve.Dataflows.Router.Interfaces;
 
-namespace Sureserve.Dataflows.Router.ElectricDataflows;
+namespace Sureserve.Dataflows.Router.FileProcessing;
 
-public class ElectricDataFlowsFileChecker(ILogger logger, PathConfig config) : IFileChecker
+public class DataFlowsFileChecker(ILogger logger, IEnvironmentConfig config) : IFileChecker
 {
     public async Task CheckForFilesAsync(CancellationToken cancellationToken)
     {
         while (!cancellationToken.IsCancellationRequested)
         {
-            PhysicalFileProvider fileWatcher = new($"{config.ElectricDataFlowsIncomingFolderPath}");
+            logger.LogInformation("Looking for files in: {InputPath}.", config.InputPath);
+            PhysicalFileProvider fileWatcher = new($"{config.InputPath}");
             IEnumerable<IFileInfo> changedFiles =
                 (PhysicalDirectoryContents)fileWatcher.GetDirectoryContents(string.Empty);
             changedFiles = changedFiles.Where(cf => !cf.IsDirectory);
@@ -19,12 +20,12 @@ public class ElectricDataFlowsFileChecker(ILogger logger, PathConfig config) : I
 
             if (changedFiles.Any())
             {
-                logger.LogInformation("Found {changedFilesCount} new electric dataflows.", changedFiles.Count());
+                logger.LogInformation("Found {changedFilesCount} new dataflows.", changedFiles.Count());
             }
 
             foreach (IFileInfo changedFile in changedFiles)
             {
-                await ProcessFile(changedFile);
+                await ProcessFile(changedFile, cancellationToken);
                 fileProcessCount++;
             }
 
@@ -35,11 +36,11 @@ public class ElectricDataFlowsFileChecker(ILogger logger, PathConfig config) : I
         }
     }
     
-    private async Task ProcessFile(IFileInfo changedFile)
+    private async Task ProcessFile(IFileInfo changedFile, CancellationToken cancellationToken)
     {
-        // Placeholder for file processing logic
         logger.LogInformation("Processing file: {fileName}", changedFile.Name);
-        await Task.Delay(1000); // Simulate some processing time
+        IFileProcessor fileProcessor = FileProcessorFactory.Create(changedFile.Name, config);
+        await fileProcessor.ProcessFilesAsync(cancellationToken);
         logger.LogInformation("Finished processing file: {fileName}", changedFile.Name);
     }
 }
