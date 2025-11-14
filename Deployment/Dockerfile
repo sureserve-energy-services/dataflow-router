@@ -24,10 +24,10 @@ ENV VSS_NUGET_EXTERNAL_FEED_ENDPOINTS {\"endpointCredentials\": [{\"endpoint\":\
 
 # Copy csproj and restore as distinct layers
 COPY . ./
-RUN dotnet restore Providor.MHHS.Electric.RequestService/Providor.MHHS.Electric.RequestService.csproj --source $FEED_URL --source $SHARED_FEED_URL --source "https://api.nuget.org/v3/index.json"
+RUN dotnet restore Sureserve.Dataflows.Router/Sureserve.Dataflows.Router.csproj --source $FEED_URL --source $SHARED_FEED_URL --source "https://api.nuget.org/v3/index.json"
 
 # Copy everything else and build
-RUN dotnet publish Providor.MHHS.Electric.RequestService/Providor.MHHS.Electric.RequestService.csproj -c Release -o out
+RUN dotnet publish Sureserve.Dataflows.Router/Sureserve.Dataflows.Router.csproj -c Release -o out
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/sdk:8.0
@@ -35,34 +35,18 @@ WORKDIR /app
 
 COPY --from=build-env /app/out .
 
-ARG MHHS_MESSAGING_CONNECTIONSTRING
-ARG ELECTRIC_MESSAGING_CONNECTIONSTRING
-ARG ASSETAPPOINTMENT_QUEUENAME
-ARG ASSETAPPOINTMENTCONFIRMATION_QUEUENAME
-ARG ASSETTERMINATION_QUEUENAME
-ARG MESSAGING_REQUESTQUEUENAME
-ARG MESSAGING_RESPONSEQUEUENAME
-ARG MESSAGING_RESPONSEFROMASSETREGISTERQUEUENAME
-ARG MESSAGING_ARJOBSTATUSCHANGEQUEUENAME
-ARG ELECTRIC_DATAFLOWS_REQUESTQUEUENAME
-ARG MHHS_EXTERNAL_DATABASE_CONNECTIONSTRING
-ARG MHHS_INTERNAL_DATABASE_CONNECTIONSTRING
+ARG ELECTRIC_INCOMING_PATH
+ARG GAS_INCOMING_PATH
+ARG ELECTRIC_OUTGOING_PATH
+ARG GAS_OUTGOING_PATH
 ARG LOGGING_INGEST_URL
 ARG LOGGING_API_KEY
 
-ENV MessagingConfig__MhhsServiceBusConnectionString=$MHHS_MESSAGING_CONNECTIONSTRING \
-    MessagingConfig__ElectricServiceBusConnectionString=$ELECTRIC_MESSAGING_CONNECTIONSTRING \
-    MessagingConfig__MhhsRequestQueueName=$MESSAGING_REQUESTQUEUENAME \
-    MessagingConfig__MhhsResponseQueueName=$MESSAGING_RESPONSEQUEUENAME \
-    MessagingConfig__AssetAppointmentQueueName=$ASSETAPPOINTMENT_QUEUENAME \
-    MessagingConfig__AssetAppointmentConfirmationQueueName=$ASSETAPPOINTMENTCONFIRMATION_QUEUENAME \
-    MessagingConfig__AssetTerminationQueueName=$ASSETTERMINATION_QUEUENAME \
-    MessagingConfig__MhhsResponseFromAssetRegisterQueueName=$MESSAGING_RESPONSEFROMASSETREGISTERQUEUENAME \
-    MessagingConfig__AssetRegisterJobStatusChangeQueueName=$MESSAGING_ARJOBSTATUSCHANGEQUEUENAME \
-    MessagingConfig__ElectricDataFlowRequestQueueName=$ELECTRIC_DATAFLOWS_REQUESTQUEUENAME \
-	ConnectionStrings__MHHSInternal=$MHHS_INTERNAL_DATABASE_CONNECTIONSTRING \
-	ConnectionStrings__MHHSExternal=$MHHS_EXTERNAL_DATABASE_CONNECTIONSTRING \
+ENV PathConfig__ElectricDataFlowsIncomingFolderPath=$ELECTRIC_INCOMING_PATH \
+    PathConfig__GasDataFlowsIncomingFolderPath=$GAS_INCOMING_PATH \
+    PathConfig__ElectricDataFlowsOutgoingFolderPath=$ELECTRIC_OUTGOING_PATH \
+    PathConfig__GasDataFlowsIncomingFolderPath=$GAS_OUTGOING_PATH \
 	LoggingConfig__IngestUrl=$LOGGING_INGEST_URL \
 	LoggingConfig__ApiKey=$LOGGING_API_KEY
 
-ENTRYPOINT ["dotnet", "Providor.MHHS.Electric.RequestService.dll"]
+ENTRYPOINT ["dotnet", "Sureserve.Dataflows.Router.dll"]
