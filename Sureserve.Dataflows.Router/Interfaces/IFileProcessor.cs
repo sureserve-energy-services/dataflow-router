@@ -1,6 +1,8 @@
-﻿namespace Sureserve.Dataflows.Router.Interfaces;
+﻿using Microsoft.Extensions.FileProviders;
+
+namespace Sureserve.Dataflows.Router.Interfaces;
 
 public interface IFileProcessor
 {
-    Task ProcessFilesAsync(CancellationToken cancellationToken);
+    Task ProcessFileAsync(IFileInfo fileInfo, CancellationToken cancellationToken);
 }
