@@ -11,7 +11,7 @@ public static class FileProcessorFactory
         {
             if (environmentConfig.EnvironmentType == EnvironmentType.Electric)
             {
-                return new ElectricFileProcessor(environmentConfig);
+                return new ElectricFileProcessor();
             }
             
             if (environmentConfig.EnvironmentType == EnvironmentType.Gas)

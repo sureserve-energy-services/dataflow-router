@@ -9,6 +9,4 @@ public interface IEnvironmentConfig
     string OutputCommand { get; set; }
     string OutputPath { get; set; }
     EnvironmentType EnvironmentType { get; set; }
-    string DestinationUsername { get; set; }
-    string DestinationPassword { get; set; }
 }

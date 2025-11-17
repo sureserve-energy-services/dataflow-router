@@ -1,11 +1,10 @@
-﻿using Microsoft.Extensions.FileProviders;
-using Sureserve.Dataflows.Router.Interfaces;
+﻿using Sureserve.Dataflows.Router.Interfaces;
 
 namespace Sureserve.Dataflows.Router.FileProcessing;
 
 public class GasFileProcessor : IFileProcessor
 {
-    public Task ProcessFileAsync(IFileInfo fileInfo, CancellationToken cancellationToken)
+    public Task ProcessFilesAsync(CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

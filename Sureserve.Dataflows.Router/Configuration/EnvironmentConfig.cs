@@ -9,6 +9,4 @@ public class EnvironmentConfig : IEnvironmentConfig
     public EnvironmentOutputType OutputType { get; set; } = EnvironmentOutputType.Path;
     public string OutputCommand { get; set; } = "";
     public string OutputPath { get; set; } = "";
-    public string DestinationUsername { get; set; } = "";
-    public string DestinationPassword { get; set; } = "";
 }
