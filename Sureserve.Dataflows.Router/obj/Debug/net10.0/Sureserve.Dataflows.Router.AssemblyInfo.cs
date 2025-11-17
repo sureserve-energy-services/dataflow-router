@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Sureserve.Dataflows.Router")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2cd39c7aa51b50040bba22e8866d9449e2ec4365")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f005d68a4ea9bbd3462f9b100416e281ed8959cf")]
 [assembly: System.Reflection.AssemblyProductAttribute("Sureserve.Dataflows.Router")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Sureserve.Dataflows.Router")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

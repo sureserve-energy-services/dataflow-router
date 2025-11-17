@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.FileProviders.Internal;
+using Providor.Logging;
 using Sureserve.Dataflows.Router.Configuration;
 using Sureserve.Dataflows.Router.Interfaces;
 
@@ -38,9 +39,23 @@ public class DataFlowsFileChecker(ILogger logger, IEnvironmentConfig config) : I
     
     private async Task ProcessFile(IFileInfo changedFile, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Processing file: {fileName}", changedFile.Name);
-        IFileProcessor fileProcessor = FileProcessorFactory.Create(changedFile.Name, config);
-        await fileProcessor.ProcessFileAsync(cancellationToken);
-        logger.LogInformation("Finished processing file: {fileName}", changedFile.Name);
+        string? fileName = Path.GetFileName(changedFile.PhysicalPath);
+        
+        using (logger.BeginScope(new Dictionary<string, object>()
+                   { { LoggingConstants.FileNameString, fileName ?? "N/A" } }))
+        {
+            try
+            {
+                logger.LogInformation("Processing file: {fileName}", changedFile.Name);
+                IFileProcessor fileProcessor = FileProcessorFactory.Create(changedFile.Name, config);
+                await fileProcessor.ProcessFileAsync(changedFile, cancellationToken);
+                logger.LogInformation("Finished processing file: {fileName}", changedFile.Name);
+            }
+            catch (Exception exception)
+            {
+                logger.LogError(exception, "Error processing file: {fileName} - {exception}", changedFile.Name, exception.ToString());
+                throw;
+            }
+        }
     }
 }
