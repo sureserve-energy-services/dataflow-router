@@ -10,7 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployment", "Deployment", 
 		Deployment\azure-pipelines-dev.yml = Deployment\azure-pipelines-dev.yml
 		Deployment\azure-pipelines-prod.yml = Deployment\azure-pipelines-prod.yml
 		Deployment\azure-pipelines-qa.yml = Deployment\azure-pipelines-qa.yml
-		Deployment\.gitignore = Deployment\.gitignore
 		Deployment\Dockerfile = Deployment\Dockerfile
 		Deployment\nuget.config = Deployment\nuget.config
 		Deployment\nuget.dev.config = Deployment\nuget.dev.config
