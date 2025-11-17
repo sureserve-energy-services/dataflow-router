@@ -5,13 +5,22 @@ on:
     branches:
       - dev
 
-env:
-  # Static values
+# Static-style configuration
+vars:
   VERSION: 0.2.53
   SUFFIX: dev
+  # Change this if your GitLab registry URL is different
+  GITLAB_REGISTRY_URL: registry.gitlab.com
+
+env:
+  # Build config
   BUILD_CONFIGURATION: Debug
 
-  # These map to your ENVx_ variables (can also move to secrets if sensitive)
+  # Logging config (replace with repo/org-level variables or hard-coded values)
+  LOGGING_INGEST_URL: ${{ vars.LOGGING_INGEST_URL }}
+  LOGGING_API_KEY: ${{ secrets.LOGGING_API_KEY }}
+
+  # Environment 0
   ENV0_ENVIRONMENTTYPE: ${{ vars.ENV0_ENVIRONMENTTYPE }}
   ENV0_INPUTPATH: ${{ vars.ENV0_INPUTPATH }}
   ENV0_FLAG: ${{ vars.ENV0_FLAG }}
@@ -22,6 +31,7 @@ env:
   ENV0_DESTINATIONPASSWORD: ${{ secrets.ENV0_DESTINATIONPASSWORD }}
   ENV0_FILEEXT0: ${{ vars.ENV0_FILEEXT0 }}
 
+  # Environment 1
   ENV1_ENVIRONMENTTYPE: ${{ vars.ENV1_ENVIRONMENTTYPE }}
   ENV1_INPUTPATH: ${{ vars.ENV1_INPUTPATH }}
   ENV1_FLAG: ${{ vars.ENV1_FLAG }}
@@ -32,6 +42,7 @@ env:
   ENV1_DESTINATIONPASSWORD: ${{ secrets.ENV1_DESTINATIONPASSWORD }}
   ENV1_FILEEXT0: ${{ vars.ENV1_FILEEXT0 }}
 
+  # Environment 2
   ENV2_ENVIRONMENTTYPE: ${{ vars.ENV2_ENVIRONMENTTYPE }}
   ENV2_INPUTPATH: ${{ vars.ENV2_INPUTPATH }}
   ENV2_FLAG: ${{ vars.ENV2_FLAG }}
@@ -41,10 +52,6 @@ env:
   ENV2_DESTINATIONUSERNAME: ${{ vars.ENV2_DESTINATIONUSERNAME }}
   ENV2_DESTINATIONPASSWORD: ${{ secrets.ENV2_DESTINATIONPASSWORD }}
   ENV2_FILEEXT0: ${{ vars.ENV2_FILEEXT0 }}
-
-  # Logging config (from your MHHSTest group originally)
-  LOGGING_INGEST_URL: ${{ vars.LOGGING_INGEST_URL }}
-  LOGGING_API_KEY: ${{ secrets.LOGGING_API_KEY }}
 
 jobs:
   build-and-test:
@@ -62,65 +69,40 @@ jobs:
           dotnet-version: '8.0.x'
           include-prerelease: false
 
-      # SonarCloud Prepare
-      - name: SonarCloud - Prepare
+      # If you want SonarCloud integration, configure SONAR_TOKEN in secrets
+      - name: SonarCloud Scan (prepare + analyze)
         uses: SonarSource/sonarcloud-github-action@v2
         with:
-          projectKey: providor_mhhs-request-service
+          projectKey: Providor_mhhs-request-service
           organization: providor
-          scannerMode: dotnet
           args: >
-            -Dsonar.scanner.scanAll=false
-            -Dsonar.cs.opencover.reportsPaths=${{ runner.temp }}/**/coverage.opencover.xml
+            -Dsonar.cs.opencover.reportsPaths=**/TestResults/coverage.opencover.xml
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Restore
         run: |
-          dotnet restore "$(pwd)/**/*.csproj" \
-            --configfile nuget.dev.config
+          dotnet restore --configfile nuget.dev.config
 
       - name: Build
         run: |
-          dotnet build "$(pwd)/**/*.csproj" \
-            --configuration $BUILD_CONFIGURATION \
+          dotnet build \
+            --configuration "$BUILD_CONFIGURATION" \
             --no-restore
 
       - name: Test
         run: |
-          dotnet test "$(pwd)/**/*.csproj" \
-            --configuration $BUILD_CONFIGURATION \
+          dotnet test \
+            --configuration "$BUILD_CONFIGURATION" \
             --no-build \
             /p:CollectCoverage=true \
             /p:CoverletOutputFormat=opencover \
-            /p:CoverletOutput=${{ runner.temp }}/TestResults/coverage \
+            /p:CoverletOutput=TestResults/coverage \
             /p:Exclude="[*.UnitTests]*" \
             /p:Exclude="[*.IntegrationTests]*"
 
-      # SonarCloud Analyze + Publish
-      - name: SonarCloud - Analyze
-        uses: SonarSource/sonarcloud-github-action@v2
-        with:
-          projectKey: providor_mhhs-request-service
-          organization: providor
-          scannerMode: 'cli'
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-      - name: SonarCloud - Quality Gate
-        uses: SonarSource/sonarcloud-github-action@v2
-        with:
-          projectKey: providor_mhhs-request-service
-          organization: providor
-          scannerMode: 'cli'
-          args: >
-            -Dsonar.qualitygate.wait=true
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-      # GitHub Advanced Security dependency scanning equivalent:
-      # If you have GHAS, you can enable Dependabot / CodeQL separately.
-      - name: Dependency Review (GHAS)
+      # GitHub Advanced Security dependency scan analogue
+      - name: Dependency review
         if: github.event_name == 'pull_request'
         uses: actions/dependency-review-action@v4
 
@@ -131,17 +113,19 @@ jobs:
 
     env:
       IMAGE_NAME: providor/mhhs-request-service
-      IMAGE_TAG: ${{ env.VERSION }}-${{ env.SUFFIX }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set image tag
+        run: echo "IMAGE_TAG=${{ vars.VERSION }}-${{ vars.SUFFIX }}" >> $GITHUB_ENV
+
       - name: Login to GitLab Container Registry
-        # Replace these with your real GitLab registry URL and credentials
         run: |
-          echo "${{ secrets.GITLAB_REGISTRY_PASSWORD }}" | docker login ${{ vars.GITLAB_REGISTRY_URL }} \
-            -u "${{ secrets.GITLAB_REGISTRY_USERNAME }}" --password-stdin
+          echo "${{ secrets.GITLAB_REGISTRY_PASSWORD }}" | \
+            docker login "${{ vars.GITLAB_REGISTRY_URL }}" \
+              -u "${{ secrets.GITLAB_REGISTRY_USERNAME }}" --password-stdin
 
       - name: Build Docker image
         run: |
@@ -172,11 +156,4 @@ jobs:
             --build-arg ENV2_OUTPUTPATH="${ENV2_OUTPUTPATH}" \
             --build-arg ENV2_DESTINATIONUSERNAME="${ENV2_DESTINATIONUSERNAME}" \
             --build-arg ENV2_DESTINATIONPASSWORD="${ENV2_DESTINATIONPASSWORD}" \
-            --build-arg ENV2_FILEEXT0="${ENV2_FILEEXT0}" \
-            --build-arg LOGGING_INGEST_URL="${LOGGING_INGEST_URL}" \
-            --build-arg LOGGING_API_KEY="${LOGGING_API_KEY}" \
-            -t ${{ vars.GITLAB_REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
-
-      - name: Push Docker image
-        run: |
-          docker push ${{ vars.GITLAB_REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+            --buil
