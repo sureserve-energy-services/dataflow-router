@@ -8,7 +8,7 @@ public static class DataflowsRouterDependencies
     {
         ILoggingConfig? loggingConfig = GetLoggingConfig(config);
         services.AddSingleton(config);
-        services.AddProvidorLogging("MHHS", loggingConfig ?? new LoggingConfig());
+        services.AddProvidorLogging("DataflowsRouter", loggingConfig ?? new LoggingConfig());
         services.AddHostedService<DataflowsRouterWorker>();
         return services;
     }

@@ -40,7 +40,7 @@ public class DataFlowsFileChecker(ILogger logger, IEnvironmentConfig config) : I
     {
         logger.LogInformation("Processing file: {fileName}", changedFile.Name);
         IFileProcessor fileProcessor = FileProcessorFactory.Create(changedFile.Name, config);
-        await fileProcessor.ProcessFilesAsync(cancellationToken);
+        await fileProcessor.ProcessFileAsync(cancellationToken);
         logger.LogInformation("Finished processing file: {fileName}", changedFile.Name);
     }
 }
