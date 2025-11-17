@@ -1,22 +1,20 @@
-name: Build, Test, Analyze and Publish
+name: Build, Test, and Publish Image
 
 on:
   push:
     branches:
       - dev
 
-# Static-style configuration
-vars:
-  VERSION: 0.2.53
-  SUFFIX: dev
-  # Change this if your GitLab registry URL is different
-  GITLAB_REGISTRY_URL: registry.gitlab.com
-
 env:
-  # Build config
-  BUILD_CONFIGURATION: Debug
+  # From your Azure DevOps variables
+  VERSION: "0.2.53"
+  SUFFIX: "dev"
+  BUILD_CONFIGURATION: "Debug"
 
-  # Logging config (replace with repo/org-level variables or hard-coded values)
+  # Registry URL (change if different)
+  GITLAB_REGISTRY_URL: "registry.gitlab.com"
+
+  # Logging config (from your variable group)
   LOGGING_INGEST_URL: ${{ vars.LOGGING_INGEST_URL }}
   LOGGING_API_KEY: ${{ secrets.LOGGING_API_KEY }}
 
@@ -69,20 +67,10 @@ jobs:
           dotnet-version: '8.0.x'
           include-prerelease: false
 
-      # If you want SonarCloud integration, configure SONAR_TOKEN in secrets
-      - name: SonarCloud Scan (prepare + analyze)
-        uses: SonarSource/sonarcloud-github-action@v2
-        with:
-          projectKey: Providor_mhhs-request-service
-          organization: providor
-          args: >
-            -Dsonar.cs.opencover.reportsPaths=**/TestResults/coverage.opencover.xml
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
       - name: Restore
         run: |
-          dotnet restore --configfile nuget.dev.config
+          dotnet restore \
+            --configfile nuget.dev.config
 
       - name: Build
         run: |
@@ -101,30 +89,25 @@ jobs:
             /p:Exclude="[*.UnitTests]*" \
             /p:Exclude="[*.IntegrationTests]*"
 
-      # GitHub Advanced Security dependency scan analogue
-      - name: Dependency review
-        if: github.event_name == 'pull_request'
-        uses: actions/dependency-review-action@v4
-
   build-image-and-push:
     runs-on: ubuntu-24.04
     needs: build-and-test
     continue-on-error: true
 
     env:
-      IMAGE_NAME: providor/mhhs-request-service
+      IMAGE_NAME: "providor/mhhs-request-service"
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set image tag
-        run: echo "IMAGE_TAG=${{ vars.VERSION }}-${{ vars.SUFFIX }}" >> $GITHUB_ENV
+        run: echo "IMAGE_TAG=${VERSION}-${SUFFIX}" >> "$GITHUB_ENV"
 
       - name: Login to GitLab Container Registry
         run: |
           echo "${{ secrets.GITLAB_REGISTRY_PASSWORD }}" | \
-            docker login "${{ vars.GITLAB_REGISTRY_URL }}" \
+            docker login "${GITLAB_REGISTRY_URL}" \
               -u "${{ secrets.GITLAB_REGISTRY_USERNAME }}" --password-stdin
 
       - name: Build Docker image
@@ -145,15 +128,4 @@ jobs:
             --build-arg ENV1_OUTPUTTYPE="${ENV1_OUTPUTTYPE}" \
             --build-arg ENV1_OUTPUTCOMMAND="${ENV1_OUTPUTCOMMAND}" \
             --build-arg ENV1_OUTPUTPATH="${ENV1_OUTPUTPATH}" \
-            --build-arg ENV1_DESTINATIONUSERNAME="${ENV1_DESTINATIONUSERNAME}" \
-            --build-arg ENV1_DESTINATIONPASSWORD="${ENV1_DESTINATIONPASSWORD}" \
-            --build-arg ENV1_FILEEXT0="${ENV1_FILEEXT0}" \
-            --build-arg ENV2_ENVIRONMENTTYPE="${ENV2_ENVIRONMENTTYPE}" \
-            --build-arg ENV2_INPUTPATH="${ENV2_INPUTPATH}" \
-            --build-arg ENV2_FLAG="${ENV2_FLAG}" \
-            --build-arg ENV2_OUTPUTTYPE="${ENV2_OUTPUTTYPE}" \
-            --build-arg ENV2_OUTPUTCOMMAND="${ENV2_OUTPUTCOMMAND}" \
-            --build-arg ENV2_OUTPUTPATH="${ENV2_OUTPUTPATH}" \
-            --build-arg ENV2_DESTINATIONUSERNAME="${ENV2_DESTINATIONUSERNAME}" \
-            --build-arg ENV2_DESTINATIONPASSWORD="${ENV2_DESTINATIONPASSWORD}" \
-            --buil
+            --build-ar
