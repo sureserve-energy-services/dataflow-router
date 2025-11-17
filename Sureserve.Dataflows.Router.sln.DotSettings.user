@@ -1,4 +1,10 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=aa5a5e6a_002D6162_002D4487_002Da3eb_002D64f3ec06a70d/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Session" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;And&gt;&#xD;
+    &lt;Namespace&gt;Sureserve.Dataflows.Router.Tests&lt;/Namespace&gt;&#xD;
+    &lt;Project Location="C:\src\providor\dataflow-router\Sureserve.Dataflows.Router.Tests" Presentation="&amp;lt;Sureserve.Dataflows.Router.Tests&amp;gt;" /&gt;&#xD;
+  &lt;/And&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=fb8b4561_002Da450_002D4bbe_002Daa7a_002Dc4c5105f3989/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ElectricFileParser_Returns_Correct_Flag" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::D0D0624E-2C54-4159-B75C-D0980CE6F813::net10.0::Sureserve.Dataflows.Router.Tests.FileParserTests.ElectricFileParser_Returns_Correct_Flag&lt;/TestId&gt;&#xD;
