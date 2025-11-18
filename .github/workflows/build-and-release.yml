@@ -110,7 +110,7 @@ jobs:
         run: |
           echo "${{ secrets.GITLAB_REGISTRY_PASSWORD }}" | \
             docker login "${GITLAB_REGISTRY_URL}" \
-              -u "${{ secrets.GITLAB_REGISTRY_USERNAME }}" --password-stdin
+              --username "${{ secrets.GITLAB_REGISTRY_USERNAME }}" --password-stdin
 
       - name: Build Docker image
         run: |
