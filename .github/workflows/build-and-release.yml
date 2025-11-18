@@ -98,7 +98,7 @@ jobs:
     continue-on-error: true
 
     env:
-      IMAGE_NAME: "providor/dataflows-router"
+      IMAGE_NAME: "providor/dataflow-router"
 
     steps:
       - name: Checkout
