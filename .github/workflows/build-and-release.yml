@@ -145,6 +145,7 @@ jobs:
             --build-arg ENV2_FILEEXT0="${ENV2_FILEEXT0}" \
             --build-arg LOGGING_INGEST_URL="${LOGGING_INGEST_URL}" \
             --build-arg LOGGING_API_KEY="${LOGGING_API_KEY}" \
+            --build-arg GH_PAT="${{ secrets.GITHUB_TOKEN }}" \
             -t "${GITLAB_REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}" .
 
       - name: Push Docker image
