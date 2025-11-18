@@ -64,13 +64,11 @@ jobs:
       - name: Setup .NET 8
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
-          include-prerelease: false
+          dotnet-version: '10.0.x'
 
       - name: Restore
         run: |
-          dotnet restore \
-            --configfile nuget.dev.config
+          dotnet restore
 
       - name: Build
         run: |
@@ -95,7 +93,7 @@ jobs:
     continue-on-error: true
 
     env:
-      IMAGE_NAME: "providor/mhhs-request-service"
+      IMAGE_NAME: "providor/dataflows-router"
 
     steps:
       - name: Checkout
@@ -128,4 +126,22 @@ jobs:
             --build-arg ENV1_OUTPUTTYPE="${ENV1_OUTPUTTYPE}" \
             --build-arg ENV1_OUTPUTCOMMAND="${ENV1_OUTPUTCOMMAND}" \
             --build-arg ENV1_OUTPUTPATH="${ENV1_OUTPUTPATH}" \
-            --build-ar
+            --build-arg ENV1_DESTINATIONUSERNAME="${ENV1_DESTINATIONUSERNAME}" \
+            --build-arg ENV1_DESTINATIONPASSWORD="${ENV1_DESTINATIONPASSWORD}" \
+            --build-arg ENV1_FILEEXT0="${ENV1_FILEEXT0}" \
+            --build-arg ENV2_ENVIRONMENTTYPE="${ENV2_ENVIRONMENTTYPE}" \
+            --build-arg ENV2_INPUTPATH="${ENV2_INPUTPATH}" \
+            --build-arg ENV2_FLAG="${ENV2_FLAG}" \
+            --build-arg ENV2_OUTPUTTYPE="${ENV2_OUTPUTTYPE}" \
+            --build-arg ENV2_OUTPUTCOMMAND="${ENV2_OUTPUTCOMMAND}" \
+            --build-arg ENV2_OUTPUTPATH="${ENV2_OUTPUTPATH}" \
+            --build-arg ENV2_DESTINATIONUSERNAME="${ENV2_DESTINATIONUSERNAME}" \
+            --build-arg ENV2_DESTINATIONPASSWORD="${ENV2_DESTINATIONPASSWORD}" \
+            --build-arg ENV2_FILEEXT0="${ENV2_FILEEXT0}" \
+            --build-arg LOGGING_INGEST_URL="${LOGGING_INGEST_URL}" \
+            --build-arg LOGGING_API_KEY="${LOGGING_API_KEY}" \
+            -t "${GITLAB_REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}" .
+
+      - name: Push Docker image
+        run: |
+          docker push "${GITLAB_REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}"

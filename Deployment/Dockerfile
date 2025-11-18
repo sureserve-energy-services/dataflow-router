@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build-env
 WORKDIR /app
 
 ARG FEED_URL
@@ -30,7 +30,7 @@ RUN dotnet restore Sureserve.Dataflows.Router/Sureserve.Dataflows.Router.csproj 
 RUN dotnet publish Sureserve.Dataflows.Router/Sureserve.Dataflows.Router.csproj -c Release -o out
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/sdk:8.0
+FROM mcr.microsoft.com/dotnet/sdk:10.0
 WORKDIR /app
 
 COPY --from=build-env /app/out .
