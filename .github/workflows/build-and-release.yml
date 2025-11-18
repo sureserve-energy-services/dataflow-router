@@ -93,6 +93,7 @@ jobs:
 
   build-image-and-push:
     runs-on: ubuntu-24.04
+    environment: release
     needs: build-and-test
     continue-on-error: true
 
