@@ -68,7 +68,7 @@ jobs:
 
       - name: Restore
         run: |
-          dotnet restore
+          dotnet restore --configfile nuget.config
 
       - name: Build
         run: |
