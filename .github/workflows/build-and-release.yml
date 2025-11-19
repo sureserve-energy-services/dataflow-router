@@ -3,13 +3,13 @@ name: Build, Test, and Publish Image
 on:
   push:
     branches:
-      - dev
+      - main
 
 env:
   # From your Azure DevOps variables
-  VERSION: "0.2.53"
-  SUFFIX: "dev"
-  BUILD_CONFIGURATION: "Debug"
+  VERSION: "1.0.0"
+  SUFFIX: "release"
+  BUILD_CONFIGURATION: "Release"
 
   # Registry URL (change if different)
   GITLAB_REGISTRY_URL: "registry.gitlab.com"
