@@ -6,6 +6,6 @@ public static class ElectricFileParser
     {
         string[] rows = fileContents.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
         string[] headerColumns = rows[0].Split('|');
-        return headerColumns[10];
+        return headerColumns[11];
     }
 }

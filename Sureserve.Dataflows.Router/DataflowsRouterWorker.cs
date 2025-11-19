@@ -3,14 +3,20 @@ using Sureserve.Dataflows.Router.FileProcessing;
 
 namespace Sureserve.Dataflows.Router;
 
-public class DataflowsRouterWorker(ILogger<DataflowsRouterWorker> logger, EnvironmentConfigs config) : BackgroundService
+public class DataflowsRouterWorker(FilesChecker fileChecker, EnvironmentConfigs config) : BackgroundService
 {
+    private const int MillisecondsDelay = 15000;
+    
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        foreach (EnvironmentConfig envConfig in config.Environments)
+        while (!stoppingToken.IsCancellationRequested)
         {
-            var fileChecker = new DataFlowsFileChecker(logger, envConfig);
-            await fileChecker.CheckForFilesAsync(stoppingToken);
+            foreach (EnvironmentConfig envConfig in config.Environments)
+            {
+                await fileChecker.CheckForFilesAsync(envConfig, stoppingToken);
+            }
+            
+            await Task.Delay(MillisecondsDelay, stoppingToken);
         }
     }
 }

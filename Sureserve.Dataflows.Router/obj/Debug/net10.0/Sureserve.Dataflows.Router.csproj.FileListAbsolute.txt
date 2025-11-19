@@ -1,6 +1,0 @@
-C:\src\providor\dataflow-router\Sureserve.Dataflows.Router\obj\Debug\net10.0\Sureserve.Dataflows.Router.csproj.AssemblyReference.cache
-C:\src\providor\dataflow-router\Sureserve.Dataflows.Router\obj\Debug\net10.0\Sureserve.Dataflows.Router.GeneratedMSBuildEditorConfig.editorconfig
-C:\src\providor\dataflow-router\Sureserve.Dataflows.Router\obj\Debug\net10.0\Sureserve.Dataflows.Router.AssemblyInfoInputs.cache
-C:\src\providor\dataflow-router\Sureserve.Dataflows.Router\obj\Debug\net10.0\Sureserve.Dataflows.Router.AssemblyInfo.cs
-C:\src\providor\dataflow-router\Sureserve.Dataflows.Router\obj\Debug\net10.0\Sureserve.Dataflows.Router.csproj.CoreCompileInputs.cache
-C:\src\providor\dataflow-router\Sureserve.Dataflows.Router\obj\Debug\net10.0\Sureserve.Dataflows.Router.sourcelink.json

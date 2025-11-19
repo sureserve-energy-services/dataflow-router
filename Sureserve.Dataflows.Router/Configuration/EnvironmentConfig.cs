@@ -1,6 +1,6 @@
 ﻿namespace Sureserve.Dataflows.Router.Configuration;
 
-public class EnvironmentConfig : IEnvironmentConfig
+public class EnvironmentConfig
 {
     public EnvironmentType EnvironmentType { get; set; }
     public List<string> FileExtensions { get; set; } = [];
