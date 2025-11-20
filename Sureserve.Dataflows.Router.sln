@@ -5,16 +5,6 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sureserve.Dataflows.Router", "Sureserve.Dataflows.Router\Sureserve.Dataflows.Router.csproj", "{9C608408-497C-49A0-8226-3F3FE71C19B5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployment", "Deployment", "{0E9E0DD7-3DE6-4841-9610-F634BBE19FEA}"
-	ProjectSection(SolutionItems) = preProject
-		Deployment\azure-pipelines-dev.yml = Deployment\azure-pipelines-dev.yml
-		Deployment\azure-pipelines-prod.yml = Deployment\azure-pipelines-prod.yml
-		Deployment\azure-pipelines-qa.yml = Deployment\azure-pipelines-qa.yml
-		Deployment\Dockerfile = Deployment\Dockerfile
-		Deployment\nuget.config = Deployment\nuget.config
-		Deployment\nuget.dev.config = Deployment\nuget.dev.config
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sureserve.Dataflows.Router.Tests", "Sureserve.Dataflows.Router.Tests\Sureserve.Dataflows.Router.Tests.csproj", "{D0D0624E-2C54-4159-B75C-D0980CE6F813}"
 EndProject
 Global
