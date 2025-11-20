@@ -90,5 +90,7 @@ ENV EnvironmentConfigs__Environments__0__EnvironmentType=$ENV0_ENVIRONMENTTYPE \
     EnvironmentConfigs__Environments__2__FileExtensions__0=$ENV2_FILEEXT0 \
 	LoggingConfig__IngestUrl=$LOGGING_INGEST_URL \
 	LoggingConfig__ApiKey=$LOGGING_API_KEY
+	
+RUN apt update && apt install -y scp && rm -rf /var/lib/apt/lists/*
 
 ENTRYPOINT ["dotnet", "Sureserve.Dataflows.Router.dll"]
