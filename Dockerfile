@@ -91,6 +91,6 @@ ENV EnvironmentConfigs__Environments__0__EnvironmentType=$ENV0_ENVIRONMENTTYPE \
 	LoggingConfig__IngestUrl=$LOGGING_INGEST_URL \
 	LoggingConfig__ApiKey=$LOGGING_API_KEY
 	
-RUN apt update && apt install -y scp && rm -rf /var/lib/apt/lists/*
+RUN apt update && apt install -y openssh-client && rm -rf /var/lib/apt/lists/*
 
 ENTRYPOINT ["dotnet", "Sureserve.Dataflows.Router.dll"]
