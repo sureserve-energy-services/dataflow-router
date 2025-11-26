@@ -7,7 +7,7 @@ on:
 
 env:
   # From your Azure DevOps variables
-  VERSION: "1.0.8"
+  VERSION: "1.0.9"
   SUFFIX: "release"
   BUILD_CONFIGURATION: "Release"
 
